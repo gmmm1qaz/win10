@@ -1,0 +1,27 @@
+services:
+  windows-ltsc:
+    image: dockurr/windows
+    container_name: win10-ltsc
+    environment:
+      VERSION: "10"           # Windows 10 LTSC 长期服务版:ml-citation{ref="2,6" data="citationList"}
+      EDITION: "Enterprise"   # 企业版支持轻量化部署:ml-citation{ref="2" data="citationList"}
+      USERNAME: "admin"       # 默认账户（建议生产环境修改）:ml-citation{ref="2" data="citationList"}
+      PASSWORD: "admin"       # 默认密码（需替换为复杂字符串）:ml-citation{ref="2" data="citationList"}
+      RAM_SIZE: "8G"          # 内存分配（LTSC 最低要求 2GB）:ml-citation{ref="2,6" data="citationList"}
+      CPU_CORES: "4"          # CPU 核心数:ml-citation{ref="2" data="citationList"}
+      DISK_SIZE: "64G"        # 磁盘空间（LTSC 系统需 12GB）:ml-citation{ref="2,6" data="citationList"}
+      DISABLE_VIRTIO: "true"  # 禁用虚拟驱动提升兼容性:ml-citation{ref="2" data="citationList"}
+      SKIP_TPM_CHECK: "true"  # 绕过 TPM 安全校验:ml-citation{ref="2" data="citationList"}
+    devices:
+      - /dev/kvm             # KVM 虚拟化支持:ml-citation{ref="2,7" data="citationList"}
+      - /dev/net/tun         # VNT 虚拟网卡必需设备:ml-citation{ref="1,4" data="citationList"}
+    cap_add:
+      - NET_ADMIN            # 网络管理权限（路由/NAT 配置）:ml-citation{ref="1,4" data="citationList"}
+      - SYS_MODULE           # 内核模块加载权限:ml-citation{ref="1" data="citationList"}
+    privileged: true         # 特权模式（解决复杂权限问题）:ml-citation{ref="4" data="citationList"}
+    ports:
+      - "8007:8006"          # Web 控制台端口:ml-citation{ref="7" data="citationList"}
+      - "3390:3389/tcp"      # RDP 远程桌面端口:ml-citation{ref="7" data="citationList"}
+      - "29871:29871/udp"    # VNT 通信端口:ml-citation{ref="1,4" data="citationList"}
+    stop_grace_period: 1m    # 容器关闭超时时间:ml-citation{ref="7" data="citationList"}
+    restart: unless-stopped  # 异常自动重启:ml-citation{ref="7" data="citationList"}
